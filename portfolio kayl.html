@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B1120;
+    --bg-deep: #070B14;
+    --line: rgba(90,140,190,0.28);
+    --line-strong: rgba(120,170,220,0.55);
+    --paper: #E9F1FB;
+    --paper-dim: #9FB3CC;
+    --cyan: #63D2FF;
+    --cyan-dim: rgba(99,210,255,0.15);
+    --amber: #F2B84B;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:
+      repeating-linear-gradient(0deg, var(--line) 0px, transparent 1px, transparent 40px, var(--line) 41px),
+      repeating-linear-gradient(90deg, var(--line) 0px, transparent 1px, transparent 40px, var(--line) 41px),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+    background-attachment: fixed;
+    color: var(--paper);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  ::selection{ background: var(--cyan); color: var(--bg-deep); }
+
+  .mono{ font-family:'JetBrains Mono', monospace; letter-spacing:0.04em; }
+
+  /* ---------- corner crop marks ---------- */
+  .sheet{ position:relative; }
+  .sheet::before, .sheet::after,
+  .sheet .cm-tr, .sheet .cm-bl{
+    content:""; position:absolute; width:18px; height:18px;
+    border-color: var(--line-strong); pointer-events:none;
+  }
+  .sheet::before{ top:18px; left:18px; border-top:1.5px solid var(--line-strong); border-left:1.5px solid var(--line-strong); }
+  .sheet::after{ bottom:18px; right:18px; border-bottom:1.5px solid var(--line-strong); border-right:1.5px solid var(--line-strong); }
+  .sheet .cm-tr{ top:18px; right:18px; border-top:1.5px solid var(--line-strong); border-right:1.5px solid var(--line-strong); }
+  .sheet .cm-bl{ bottom:18px; left:18px; border-bottom:1.5px solid var(--line-strong); border-left:1.5px solid var(--line-strong); }
+
+  .sheet-tag{
+    position:absolute; top:34px; left:34px;
+    font-size:11px; color: var(--paper-dim); text-transform:uppercase;
+  }
+  .sheet-tag b{ color: var(--cyan); }
+
+  section{ position:relative; padding: 120px 40px; max-width:1100px; margin:0 auto; }
+  @media (max-width:640px){ section{ padding:90px 22px; } }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{ opacity:0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ================= HERO ================= */
+  .hero{
+    min-height: 100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 80px 40px 60px;
+    position: relative;
+  }
+  @media (max-width:640px){ .hero{ padding:80px 22px 60px; } }
+
+  .hero-grid{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 60px;
+    width: 100%;
+    margin: auto 0;
+  }
+  @media (max-width: 960px){
+    .hero-grid{
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+  }
+
+  .hero-content{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* ---------- Hero Photo Technical Frame ---------- */
+  .hero-photo-wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  @media (max-width: 960px){
+    .hero-photo-wrap{
+      order: -1;
+      justify-content: flex-start;
+    }
+  }
+  @media (max-width: 640px){
+    .hero-photo-wrap{
+      justify-content: center;
+    }
+  }
+
+  .hero-photo-container{
+    position: relative;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Corner crosshairs / blueprint markers */
+  .tech-corner{
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--cyan);
+    pointer-events: none;
+    transition: all .3s ease;
+  }
+  .tc-tl{ top: 0; left: 0; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+  .tc-tr{ top: 0; right: 0; border-top: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+  .tc-bl{ bottom: 0; left: 0; border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+  .tc-br{ bottom: 0; right: 0; border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+
+  .tech-ring{
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    height: 270px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-photo{
+    position: relative;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 32px rgba(99,210,255,0.22), 0 16px 36px rgba(0,0,0,0.5);
+    background: #FFFFFF;
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  .hero-photo-container:hover .hero-photo{
+    transform: scale(1.02);
+    box-shadow: 0 0 42px rgba(99,210,255,0.38), 0 20px 42px rgba(0,0,0,0.6);
+  }
+  .hero-photo-container:hover .tech-corner{
+    border-color: #A5E5FF;
+  }
+
+  .hero-photo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+    display: block;
+    filter: contrast(102%) brightness(98%);
+    transition: transform .4s ease;
+  }
+  .hero-photo-container:hover .hero-photo img{
+    transform: scale(1.04);
+  }
+
+  @media (max-width: 640px){
+    .tech-ring{ height: 210px; }
+    .hero-photo{ width: 190px; height: 190px; }
+  }
+
+  .eyebrow-row{
+    display:flex; align-items:center; gap:14px; margin-bottom:34px;
+    font-size:12px; color:var(--paper-dim);
+  }
+  .eyebrow-row .dot{ width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+
+  .stamp{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.35em;
+    color: var(--cyan);
+    border: 1px solid var(--cyan-dim);
+    padding: 8px 16px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+  }
+
+  .hero h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size: clamp(2.4rem, 5.2vw, 5rem);
+    line-height: 0.98;
+    letter-spacing:-0.01em;
+    color: var(--paper);
+  }
+  .hero h1 span{ color: var(--cyan); }
+
+  .hero .role{
+    margin-top:22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--paper-dim);
+    display:flex; align-items:center; gap:14px;
+  }
+  .hero .role::before{ content:""; width:34px; height:1px; background:var(--line-strong); display:inline-block; }
+
+  .hero-links{ margin-top:46px; display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing:0.06em;
+    color: var(--paper);
+    text-decoration:none;
+    border:1px solid var(--line-strong);
+    padding: 12px 20px;
+    display:inline-flex; align-items:center; gap:10px;
+    transition: all .25s ease;
+    text-transform:uppercase;
+  }
+  .btn:hover{ border-color:var(--cyan); color:var(--cyan); background:var(--cyan-dim); }
+  .btn.primary{ background:var(--cyan); color:var(--bg-deep); border-color:var(--cyan); }
+  .btn.primary:hover{ opacity:.85; background:var(--cyan); color:var(--bg-deep); }
+
+  .scroll-cue{
+    position:absolute; bottom:40px; left:40px;
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--paper-dim);
+    display:flex; align-items:center; gap:10px;
+  }
+  .scroll-cue .line{ width:1px; height:34px; background:linear-gradient(var(--cyan), transparent); animation: drop 1.8s ease-in-out infinite; }
+  @keyframes drop{ 0%{transform:scaleY(0); transform-origin:top;} 50%{transform:scaleY(1); transform-origin:top;} 51%{transform-origin:bottom;} 100%{transform:scaleY(0); transform-origin:bottom;} }
+
+  /* ================= SECTION HEADERS ================= */
+  .sec-head{ display:flex; align-items:baseline; gap:18px; margin-bottom:50px; }
+  .sec-num{ font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--cyan); }
+  .sec-head h2{
+    font-family:'Space Grotesk', sans-serif; font-weight:600;
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    text-transform:uppercase; letter-spacing:0.02em;
+  }
+  .sec-head .rule{ flex:1; height:1px; background:var(--line-strong); }
+
+  /* ================= ABOUT (spec sheet) ================= */
+  .spec-grid{ display:grid; grid-template-columns: 1.1fr 1fr; gap: 60px; }
+  @media (max-width: 760px){ .spec-grid{ grid-template-columns:1fr; gap:36px; } }
+  .about-copy p{ font-size: 1.05rem; color:var(--paper); max-width:52ch; }
+  .about-copy p + p{ margin-top:16px; color:var(--paper-dim); }
+
+  .spec-table{ border-top:1px solid var(--line-strong); }
+  .spec-row{ display:flex; justify-content:space-between; gap:20px; padding:16px 0; border-bottom:1px solid var(--line); }
+  .spec-row .k{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.05em; }
+  .spec-row .v{ font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--paper); text-align:right; }
+  .status-dot{ display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--cyan); margin-right:8px; box-shadow:0 0 6px var(--cyan); }
+
+  /* ================= SKILLS (component parts) ================= */
+  .parts-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .part{ background: var(--bg); padding: 26px 22px; transition: background .25s ease; }
+  .part:hover{ background: rgba(99,210,255,0.05); }
+  .part .pid{ font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--cyan); }
+  .part h3{ font-family:'Space Grotesk', sans-serif; font-size:1.05rem; margin-top:8px; font-weight:600; }
+  .part p{ font-size:12.5px; color:var(--paper-dim); margin-top:6px; font-family:'JetBrains Mono', monospace; }
+
+  /* ================= PROJECTS ================= */
+  .proj-list{ display:flex; flex-direction:column; }
+  .proj{
+    display:grid; grid-template-columns: 90px 1fr auto; gap:24px; align-items:start;
+    padding: 30px 0; border-bottom:1px solid var(--line);
+    transition: padding-left .3s ease, border-color .3s ease;
+  }
+  .proj:hover{ padding-left:12px; border-color:var(--cyan-dim); }
+  @media (max-width:640px){ .proj{ grid-template-columns:1fr; gap:10px; } }
+  .proj .sheetno{ font-family:'JetBrains Mono', monospace; color:var(--paper-dim); font-size:12px; padding-top:4px; }
+  .proj h3{ font-family:'Space Grotesk', sans-serif; font-size:1.3rem; font-weight:600; }
+  .proj p{ margin-top:8px; color:var(--paper-dim); max-width:56ch; font-size:0.95rem; }
+  .tags{ margin-top:14px; display:flex; gap:8px; flex-wrap:wrap; }
+  .tag{ font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--cyan); border:1px solid var(--cyan-dim); padding:4px 9px; }
+  .proj-link{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--paper); text-decoration:none; white-space:nowrap; border-bottom:1px solid var(--line-strong); padding-bottom:2px; align-self:start; }
+  .proj-link:hover{ color:var(--cyan); border-color:var(--cyan); }
+
+  /* ================= CONTACT (nameplate) ================= */
+  .plate{
+    border:1px dashed var(--line-strong);
+    padding: 60px 40px;
+    text-align:center;
+    position:relative;
+  }
+  .plate h2{
+    font-family:'Space Grotesk', sans-serif; font-weight:700;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+  }
+  .plate p{ color:var(--paper-dim); margin-top:14px; font-size:1rem; }
+  .plate .hero-links{ justify-content:center; margin-top:36px; }
+
+  footer{
+    text-align:center; padding: 40px 20px 60px;
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--paper-dim); letter-spacing:0.05em;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero sheet reveal in">
+  <span class="cm-tr"></span><span class="cm-bl"></span>
+
+  <div class="hero-grid">
+    <div class="hero-content">
+      <div class="eyebrow-row mono">
+        <span class="dot"></span> STATUS: OPEN TO WORK &nbsp;·&nbsp; REV. 2026.01
+      </div>
+      <div class="stamp">DIGITAL PORTFOLIO</div>
+      <h1>KYLLE NEO<br><span>GELSANO</span></h1>
+      <div class="role">PROGRAMMER / WEB DEVELOPER / APP DEVELOPER</div>
+      <div class="hero-links">
+        <a href="#projects" class="btn primary">VIEW WORK</a>
+        <a href="#contact" class="btn">GET IN TOUCH</a>
+      </div>
+    </div>
+
+    <div class="hero-photo-wrap">
+      <div class="hero-photo-container">
+        <span class="tech-corner tc-tl"></span>
+        <span class="tech-corner tc-tr"></span>
+        <span class="tech-corner tc-bl"></span>
+        <span class="tech-corner tc-br"></span>
+        <div class="tech-ring"></div>
+        <div class="hero-photo">
+          <img src="formal.jpg" onerror="this.onerror=null; this.src='formal.jpg.jpg';" alt="Kylle Neo A. Gelsano">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><div class="line"></div>SCROLL</div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="sheet reveal">
+  <span class="cm-tr"></span><span class="cm-bl"></span>
+  <div class="sec-head"><span class="sec-num mono">01</span><h2>About</h2><div class="rule"></div></div>
+  <div class="spec-grid">
+    <div class="about-copy">
+      <p>I'm a programmer and web developer who also builds apps — I like taking an idea from a blank file to something people can actually use. Right now I'm deep in learning mode, sharpening my skills and building myself up in this field, one project at a time.</p>
+      <p>I like to watch movies and anime on my spare time, and I also play a lot of competitive and online games.</p>
+    </div>
+    <div class="spec-table mono">
+      <div class="spec-row"><span class="k">Based in</span><span class="v">Don Carlos Sur, Bukidnon</span></div>
+      <div class="spec-row"><span class="k">Focus</span><span class="v">Web & App Development</span></div>
+      <div class="spec-row"><span class="k">Education</span><span class="v">BS Info. Technology, TCC</span></div>
+      <div class="spec-row"><span class="k">Available</span><span class="v"><span class="status-dot"></span>Yes</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SKILLS ================= -->
+<section id="skills" class="sheet reveal">
+  <span class="cm-tr"></span><span class="cm-bl"></span>
+  <div class="sec-head"><span class="sec-num mono">02</span><h2>Skills</h2><div class="rule"></div></div>
+  <div class="parts-grid">
+    <div class="part"><div class="pid">PART—01</div><h3>Web Development</h3><p>HTML, CSS, JS · Responsive & mobile-first design · Node.js</p></div>
+    <div class="part"><div class="pid">PART—02</div><h3>App Development</h3><p>Mobile app development · UI/UX basics · App deployment & publishing</p></div>
+    <div class="part"><div class="pid">PART—03</div><h3>Computer Hardware</h3><p>PC building & troubleshooting · OS install & config · Networking basics</p></div>
+  </div>
+</section>
+
+<!-- ================= PROJECTS ================= -->
+<section id="projects" class="sheet reveal">
+  <span class="cm-tr"></span><span class="cm-bl"></span>
+  <div class="sec-head"><span class="sec-num mono">03</span><h2>Projects</h2><div class="rule"></div></div>
+  <div class="proj-list">
+    <div class="proj">
+      <div class="sheetno">SHEET-01</div>
+      <div>
+        <h3>Project Name</h3>
+        <p>One or two sentences describing what this project does and the problem it solves.</p>
+        <div class="tags"><span class="tag">Tech</span><span class="tag">Tech</span></div>
+      </div>
+      <a href="#" class="proj-link">VIEW →</a>
+    </div>
+    <div class="proj">
+      <div class="sheetno">SHEET-02</div>
+      <div>
+        <h3>Project Name</h3>
+        <p>One or two sentences describing what this project does and the problem it solves.</p>
+        <div class="tags"><span class="tag">Tech</span><span class="tag">Tech</span></div>
+      </div>
+      <a href="#" class="proj-link">VIEW →</a>
+    </div>
+    <div class="proj">
+      <div class="sheetno">SHEET-03</div>
+      <div>
+        <h3>Project Name</h3>
+        <p>One or two sentences describing what this project does and the problem it solves.</p>
+        <div class="tags"><span class="tag">Tech</span><span class="tag">Tech</span></div>
+      </div>
+      <a href="#" class="proj-link">VIEW →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="reveal">
+  <div class="plate sheet">
+    <span class="cm-tr"></span><span class="cm-bl"></span>
+    <h2>Let's talk.</h2>
+    <p>Open to opportunities, collaborations, and good conversations.</p>
+    <div class="hero-links">
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kylleneogelsano143@gmail.com" class="btn primary" target="_blank" rel="noopener">EMAIL ME</a>
+      <a href="https://www.linkedin.com/in/kylle-neo-gelsano-907aa2406/" class="btn" target="_blank" rel="noopener">LINKEDIN</a>
+      <a href="https://github.com/kayl143" class="btn" target="_blank" rel="noopener">GITHUB</a>
+    </div>
+  </div>
+</section>
+
+<footer>END OF DOCUMENT — DIGITAL PORTFOLIO — REV. 2026</footer>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
