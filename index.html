@@ -274,6 +274,43 @@
   .part h3{ font-family:'Space Grotesk', sans-serif; font-size:1.05rem; margin-top:8px; font-weight:600; }
   .part p{ font-size:12.5px; color:var(--paper-dim); margin-top:6px; font-family:'JetBrains Mono', monospace; }
 
+  /* ================= CERTIFICATES ================= */
+  .cert-intro{ color:var(--paper-dim); max-width:62ch; margin-bottom:40px; font-size:1rem; }
+  .cert-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:28px; }
+  .cert{
+    border:1px solid var(--line-strong);
+    background: rgba(11,17,32,0.7);
+    padding:16px;
+    transition: border-color .3s ease, transform .3s ease;
+  }
+  .cert:hover{ border-color:var(--cyan); transform: translateY(-4px); }
+  .cert-thumb{
+    display:block; width:100%; padding:0; cursor:zoom-in;
+    background:#fff; border:1px solid var(--line); position:relative; overflow:hidden;
+  }
+  .cert-thumb img{ display:block; width:100%; height:auto; transition: transform .4s ease; }
+  .cert-thumb:hover img{ transform: scale(1.03); }
+  .cert-thumb .zoom{
+    position:absolute; right:10px; bottom:10px;
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+    background:var(--bg-deep); color:var(--cyan); border:1px solid var(--cyan-dim); padding:4px 9px;
+  }
+  .cert .cid{ font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--cyan); margin-top:16px; }
+  .cert h3{ font-family:'Space Grotesk', sans-serif; font-size:1.15rem; font-weight:600; margin-top:4px; }
+  .cert .issuer{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--paper-dim); margin-top:4px; }
+  .cert p{ color:var(--paper-dim); font-size:0.92rem; margin-top:10px; }
+
+  /* lightbox */
+  .lightbox{
+    position:fixed; inset:0; z-index:100; display:none;
+    align-items:center; justify-content:center; flex-direction:column; gap:14px;
+    background:rgba(4,7,14,0.92); padding:24px; cursor:zoom-out;
+  }
+  .lightbox.open{ display:flex; }
+  .lightbox img{ max-width:min(1100px,100%); max-height:80vh; border:1px solid var(--line-strong); box-shadow:0 20px 60px rgba(0,0,0,0.6); }
+  .lightbox .lb-cap{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.05em; text-align:center; }
+  .lightbox .lb-close{ position:absolute; top:18px; right:22px; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--cyan); border:1px solid var(--cyan-dim); background:none; padding:8px 14px; cursor:pointer; text-transform:uppercase; }
+
   /* ================= PROJECTS ================= */
   .proj-list{ display:flex; flex-direction:column; }
   .proj{
@@ -395,10 +432,43 @@
   </div>
 </section>
 
+<!-- ================= CERTIFICATES ================= -->
+<section id="certificates" class="sheet reveal">
+  <span class="cm-tr"></span><span class="cm-bl"></span>
+  <div class="sec-head"><span class="sec-num mono">03</span><h2>Certificates</h2><div class="rule"></div></div>
+  <p class="cert-intro">Proof of the learning I do outside the classroom — networking fundamentals and community tech events that keep me sharpening my skills. Click a certificate to view it in full.</p>
+
+  <div class="cert-grid">
+
+    <article class="cert">
+      <button class="cert-thumb" type="button" data-full="cert-cisco-packet-tracer.jpg" data-cap="Getting Started with Cisco Packet Tracer — Cisco Networking Academy">
+        <img src="cert-cisco-packet-tracer.jpg" alt="Certificate: Getting Started with Cisco Packet Tracer" loading="lazy">
+        <span class="zoom">View ⤢</span>
+      </button>
+      <div class="cid">CERT—01 · 08 OCT 2026</div>
+      <h3>Getting Started with Cisco Packet Tracer</h3>
+      <div class="issuer">Cisco Networking Academy</div>
+      <p>Completed an introductory course on Cisco Packet Tracer, learning to build and simulate network topologies. It strengthens my networking basics alongside my hardware and web skills.</p>
+    </article>
+
+    <article class="cert">
+      <button class="cert-thumb" type="button" data-full="cert-devcon-bits-of-light.jpg" data-cap="Certificate of Participation — DEVCON Bits of Light Roadshow">
+        <img src="cert-devcon-bits-of-light.jpg" alt="Certificate of Participation: DEVCON Bits of Light Roadshow" loading="lazy">
+        <span class="zoom">View ⤢</span>
+      </button>
+      <div class="cid">CERT—02 · 30 JUL 2026</div>
+      <h3>DEVCON Bits of Light Roadshow</h3>
+      <div class="issuer">DEVCON Bukidnon Chapter · Torres Capitol College</div>
+      <p>Certificate of Participation for actively helping in the "Spreading Light Through Technology and Compassion" roadshow, a day of learning, care, and smiles held at Torres Capitol College.</p>
+    </article>
+
+  </div>
+</section>
+
 <!-- ================= PROJECTS ================= -->
 <section id="projects" class="sheet reveal">
   <span class="cm-tr"></span><span class="cm-bl"></span>
-  <div class="sec-head"><span class="sec-num mono">03</span><h2>Projects</h2><div class="rule"></div></div>
+  <div class="sec-head"><span class="sec-num mono">04</span><h2>Projects</h2><div class="rule"></div></div>
   <div class="proj-list">
 
     <div class="proj">
@@ -452,11 +522,34 @@
 
 <footer>END OF DOCUMENT — DIGITAL PORTFOLIO — REV. 2026</footer>
 
+<!-- certificate lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Certificate viewer">
+  <button class="lb-close" type="button" id="lbClose">Close ✕</button>
+  <img id="lbImg" src="" alt="">
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
 <script>
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // certificate lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbCap = document.getElementById('lbCap');
+  const closeLb = () => lb.classList.remove('open');
+  document.querySelectorAll('.cert-thumb').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      lbImg.src = btn.dataset.full;
+      lbImg.alt = btn.dataset.cap;
+      lbCap.textContent = btn.dataset.cap;
+      lb.classList.add('open');
+    });
+  });
+  lb.addEventListener('click', closeLb);
+  document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeLb(); });
 </script>
 
 </body>
